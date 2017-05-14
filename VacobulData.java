@@ -17,22 +17,28 @@ class VacobulElement {
 	public String czWord;
 	public int bucketno;
 	public int probability;
+	public String examples;
 
 	public VacobulElement() {
 	}
 	
 	public VacobulElement(String en, String cz) {
+		this(en, cz, "");
+	}
+	public VacobulElement(String en, String cz, String examples) {
 		enWord = en;
 		czWord = cz;
 		bucketno = 1;
 		probability = 8;
+		this.examples = examples;
 	}
 	
-	public VacobulElement(String en, String cz, int bucketno_, int probability_) {
+	public VacobulElement(String en, String cz, int bucketno_, int probability_, String examples_) {
 		enWord = en;
 		czWord = cz;
 		bucketno = bucketno_;
 		probability = probability_;
+		examples = examples_;
 	}
 	
 	public String toLine() {
@@ -44,6 +50,8 @@ class VacobulElement {
 		b.append(bucketno);
 		b.append(ITEMSEP);
 		b.append(probability);
+		b.append(ITEMSEP);
+		b.append(examples);
 		return b.toString();
 	}
 	
@@ -79,6 +87,17 @@ public class VacobulData {
 		for (VacobulElement e: data2) {
 			if (e.enWord.equals(en))
 				return e.czWord;
+			currentElement++;
+		}
+		currentElement = -1;
+		return null;
+	}
+	
+	public VacobulElement getElement(String en) {
+		currentElement = 0;
+		for (VacobulElement e: data2) {
+			if (e.enWord.equals(en))
+				return e;
 			currentElement++;
 		}
 		currentElement = -1;
@@ -124,14 +143,15 @@ public class VacobulData {
 			fis = new FileInputStream(fileName);
 		    Scanner scanner = new Scanner(fis, "UTF-8");
 		    while (scanner.hasNextLine()) {
-		    	VacobulElement v = new VacobulElement();
 		    	String[] splitString = (scanner.nextLine().split("\\|"));
+		    	String examples = splitString.length > 4 ? splitString[4] : "";
 		    	if (splitString.length > 3) {
 		    		int bucketno = Integer.parseInt(splitString[2]);
+		    		VacobulElement v = new VacobulElement(splitString[0], splitString[1], bucketno, Integer.parseInt(splitString[3]), examples);
 		    		if (bucketno == 1) {
-			    	    data.add(new VacobulElement(splitString[0], splitString[1], bucketno, Integer.parseInt(splitString[3])));	
+			    	    data.add(v);	
 		    		} else {
-		    			data2.add(new VacobulElement(splitString[0], splitString[1], bucketno, Integer.parseInt(splitString[3])));
+		    			data2.add(v);
 		    		}
 		    	}		    		
 		    	else if (splitString.length > 1) {
@@ -179,22 +199,23 @@ public class VacobulData {
 	}
 
 	public void updateElement(VacobulElement e) {
-		data.get(currentElement).czWord = e.czWord;
-		data.get(currentElement).enWord = e.enWord;
+		data2.get(currentElement).czWord = e.czWord;
+		data2.get(currentElement).examples = e.examples;
+		data2.get(currentElement).enWord = e.enWord;
 	}
 	
-	public void updateProbability(int delta, String en) {
+	public int updateProbability(int delta, String en) {
+		int newprob = 0;
 		for (VacobulElement e: data2) {
 			if (e.enWord.equals(en)) {
-				int newprob = delta + e.probability;
+				newprob = delta + e.probability;
 				if (newprob > 10)
 					newprob = 10;
-				else if (newprob < 1)
-					newprob = 1;
 				e.probability = newprob;
 				break;
 			}
 		}
+		return newprob;
 	}
 
 }

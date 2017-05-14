@@ -16,14 +16,14 @@ public class VacobulActions {
 	}
 	
 	void newAction() throws IOException {
-		VacobulElement e = new VacobulElement(gui.getEnWord(), gui.getCzWord());
+		VacobulElement e = new VacobulElement(gui.getEnWord(), gui.getCzWord(), gui.getExamples());
 		data.addNewElement(e);
 		data.save();
 		JOptionPane.showMessageDialog(null, "New word added ", "InfoBox: " + "Vacobul Info", JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 	private void updateAction() throws IOException {
-		VacobulElement e = new VacobulElement(gui.getEnWord(), gui.getCzWord());
+		VacobulElement e = new VacobulElement(gui.getEnWord(), gui.getCzWord(), gui.getExamples());
 		data.updateElement(e);
 		data.save();
 		JOptionPane.showMessageDialog(null, "Word updated ", "InfoBox: " + "Vacobul Info", JOptionPane.INFORMATION_MESSAGE);
@@ -37,23 +37,22 @@ public class VacobulActions {
 			gui.setEnWord("");
 		} else {
 			gui.setEnWord(e.enWord);
-			gui.setStatus(" Level:" + e.probability + "  Bucket:" + e.bucketno);
+			gui.setStatus(" Level:" + e.probability);
 		}
 		gui.setCzWord("");
+		gui.setExamples("");
 		data.save();
 	}
 
 	void revealAction() throws IOException {
-		gui.setCzWord(data.getCz(gui.getEnWord()));
+		VacobulElement e = data.getElement(gui.getEnWord());
+		gui.setCzWord(e.czWord);
+		gui.setExamples(e.examples);
 	}
 	
-	void knownAction() throws IOException {
-		data.updateProbability(-2, gui.getEnWord());
-		data.save();
-	}
-	
-	void unknownAction() throws IOException {
-		data.updateProbability(2, gui.getEnWord());
+	void changeProbability(int delta) throws IOException {
+		int newprob = data.updateProbability(delta, gui.getEnWord());
+		gui.setStatus(" Level:" + newprob);
 		data.save();
 	}
 	
@@ -61,10 +60,13 @@ public class VacobulActions {
 		try {
 			switch(a) {
 				case "know":
-					knownAction();
+					changeProbability(-2);
+					break;
+				case "KNOW":
+					changeProbability(-15);
 					break;
 				case "unknown":
-					unknownAction();
+					changeProbability(2);
 					break;
 				case "next":
 					nextAction();

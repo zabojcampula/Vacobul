@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTextArea;
 
 
 @SuppressWarnings("serial")
@@ -17,6 +18,7 @@ public class Vacobul extends JFrame implements ActionListener {
 	JTextField enWord;
 	JTextField czWord;
 	JLabel status;
+	JTextArea area;
 	VacobulActions actions;
 	
 	Vacobul () {
@@ -39,6 +41,18 @@ public class Vacobul extends JFrame implements ActionListener {
 	public void setStatus(String label) {
 		this.status.setText(label);
 	}
+	
+	public String getExamples() {
+		return area.getText().replaceAll("\n", "<br>");
+	}
+
+	public void setExamples(String examples) {
+		if (examples == null) {
+			area.setText("");
+		} else {
+			area.setText(examples.replaceAll("<br>", "\n"));
+		}
+	}
 
 	private JButton addButton(String text, JPanel panel) {
 		JButton b;
@@ -56,26 +70,33 @@ public class Vacobul extends JFrame implements ActionListener {
 		JPanel panel1 = new JPanel();
 		JPanel panel2 = new JPanel();
 		JPanel panel3 = new JPanel();
+		JPanel panel4 = new JPanel();
 		add(panel1);
 		add(panel2);
 		add(panel3);
+		add(panel4);
 		panel1.setLayout(new GridLayout());
-		panel2.setLayout(new GridLayout());
 		panel3.setLayout(new GridLayout());
+		panel2.setLayout(new GridLayout());
+		panel4.setLayout(new GridLayout());
 		
 		enWord = new JTextField();
 		czWord  = new JTextField();
 		panel1.add(enWord);
 		panel1.add(czWord);
 		status = new JLabel("hulala");
-		panel3.add(status);
+		panel4.add(status);
 
-		addButton("know", panel2);
-		addButton("unknow", panel2);
-		addButton("reveal", panel2);
-		addButton("next", panel2);
-		addButton("new", panel2);
-		addButton("update", panel2);
+		addButton("KNOW", panel3);
+		addButton("know", panel3);
+		addButton("unknown", panel3);
+		addButton("reveal", panel3);
+		addButton("next", panel3);
+		addButton("new", panel3);
+		addButton("update", panel3);
+		
+		area = new JTextArea(5, 5);
+		panel2.add(area);
 			
 		pack();
 	}

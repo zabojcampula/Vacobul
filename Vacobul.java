@@ -24,6 +24,8 @@ public class Vacobul extends JFrame implements ActionListener {
 	Vacobul () {
         actions = new VacobulActions(this);
 		CreateUI();
+		//VacobulDataSync datasync = new VacobulDataSync();
+		//datasync.syncBegin();
 	}
 
 	public String getEnWord() {
@@ -97,7 +99,9 @@ public class Vacobul extends JFrame implements ActionListener {
 		
 		area = new JTextArea(5, 5);
 		panel2.add(area);
-			
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		pack();
 	}
 

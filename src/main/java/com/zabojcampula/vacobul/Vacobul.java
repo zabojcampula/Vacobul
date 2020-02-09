@@ -2,6 +2,8 @@ package com.zabojcampula.vacobul;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -11,8 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 
-
-@SuppressWarnings("serial")
 public class Vacobul extends JFrame implements ActionListener {
 
 	JTextField enWord;
@@ -21,11 +21,12 @@ public class Vacobul extends JFrame implements ActionListener {
 	JTextArea area;
 	VacobulActions actions;
 	
-	Vacobul () {
-        actions = new VacobulActions(this);
+	Vacobul (String dictionaryFileName) {
+		VacobulData data = new VacobulData(dictionaryFileName);
 		CreateUI();
-		//VacobulDataSync datasync = new VacobulDataSync();
-		//datasync.syncBegin();
+		actions = new VacobulActions(this, data);
+		addWindowListener(actions);
+
 	}
 
 	public String getEnWord() {
@@ -86,7 +87,8 @@ public class Vacobul extends JFrame implements ActionListener {
 		czWord  = new JTextField();
 		panel1.add(enWord);
 		panel1.add(czWord);
-		status = new JLabel("hulala");
+		status = new JLabel("");
+
 		panel4.add(status);
 
 		addButton("KNOW", panel3);
@@ -96,12 +98,13 @@ public class Vacobul extends JFrame implements ActionListener {
 		addButton("next", panel3);
 		addButton("new", panel3);
 		addButton("update", panel3);
-		
-		area = new JTextArea(5, 5);
+		addButton("stats", panel3);
+		addButton("sync", panel3);
+
+		area = new JTextArea(7, 5);
 		panel2.add(area);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		pack();
 	}
 
@@ -112,9 +115,11 @@ public class Vacobul extends JFrame implements ActionListener {
 	//public static 
 
 	public static void main(String[] args) {
+
+		String dictionaryFileName = args.length > 0 ? args[0] : "dictionary.json";
 		java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Vacobul().setVisible(true);
+                new Vacobul(dictionaryFileName).setVisible(true);
             }
         });
 	}

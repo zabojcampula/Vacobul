@@ -1,0 +1,17 @@
+[ {
+  "enWord" : "coffin",
+  "czWord" : "kista",
+  "bucketno" : 1,
+  "probability" : 8,
+  "examples" : "",
+  "created" : 1581191524.161238400,
+  "lastChecked" : 1581191524.161238400
+}, {
+  "enWord" : "sandokan",
+  "czWord" : "budokan",
+  "bucketno" : 1,
+  "probability" : 8,
+  "examples" : "",
+  "created" : 1581191511.553196300,
+  "lastChecked" : 1581191511.553196300
+} ]
